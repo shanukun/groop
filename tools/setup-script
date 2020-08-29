@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+python3 -m pip install Django
+pip3 install djangorestframework
+pip3 install markdown
+pip3 install django-filter
