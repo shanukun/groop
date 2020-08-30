@@ -2,6 +2,7 @@
 
 set -e
 
+source ../groop-venv/bin/activate
 python3 -m pip install Django
 pip3 install djangorestframework
 pip3 install markdown
