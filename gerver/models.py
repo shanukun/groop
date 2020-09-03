@@ -1,21 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from PIL import Image
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default='default.jpg', height_field=300,
+                              width_field=300, upload_to='profile_pics')
     group = models.ManyToManyField('Group')
-
-    def save(self):
-        super().save()
-
-        img = Image.open(self.image.path)
-
-        if img.height > 300 or img.width > 300:
-            img.thumbnail(output_size)
-            img.save(self.image.path)
 
 class Group(models.Model):
     name = models.CharField(max_length=128)
+
+class Post(models.Model):
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+    date_time = models.DateTimeField(auto_now_add=True)
+    post_text = models.TextField(max_length=512)
+    post_image = models.ImageField(default='default.jpg', upload_to='post_images')

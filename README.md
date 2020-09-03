@@ -3,8 +3,8 @@
 ## TODO
 
 - Models
-  - [ ] User
-  - [ ] Group
+  - [x] User
+  - [x] Group
   - [ ] Settings
 - URLs
   - [ ] Wall
