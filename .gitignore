@@ -1,2 +1,5 @@
+/gerver/migrations/
+*.pyc
+/post_images
 /groop-venv
 db.sqlite3
