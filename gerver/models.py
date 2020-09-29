@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    group = models.ManyToManyField('Group')
 
 class Group(models.Model):
     name = models.CharField(max_length=128)
