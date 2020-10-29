@@ -25,8 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name' ,'password']
         extra_kwargs = {'password': {'write_only': True}}
+        fields = ['username', 'email', 'first_name', 'last_name', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
     """
@@ -47,6 +47,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     user = UserSerializer()
 
+    class Meta:
+        model = Profile
+        fields = ['user']
+        extra_kwargs = {"user": {"write_only": True}}
+
     def create(self, validated_data):
         user = User(
             email=validated_data['user']['email'],
@@ -56,9 +61,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         user.save()
         return Profile.objects.create(user=user)
 
-    class Meta:
-        model = Profile
-        fields = ['user']
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
