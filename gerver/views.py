@@ -1,3 +1,4 @@
+from gerver.auth import encode
 from .models import Profile
 from .serializers import GroupSerializer, ProfileSerializer
 from django.db.utils import IntegrityError
@@ -14,10 +15,10 @@ def register_user(request):
         try:
             serializer.save()
         except IntegrityError:
-            error = {"status": 500, "msg": "Username already exist."}
+            error = {"msg": "Username already exist."}
             return Response(error,
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(serializer.validated_data,
+        return Response(encode(serializer.validated_data),
                         status=status.HTTP_201_CREATED)
     return Response(serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)
@@ -38,3 +39,9 @@ def create_group(request):
                         status=status.HTTP_201_CREATED)
     return Response(serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.AllowAny,))
+def authenticate_user(request):
+    pass
