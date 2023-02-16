@@ -1,0 +1,40 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background: url("./assets/bg.png") bottom left no-repeat fixed;
+}
+.pull-right {
+    float: right;
+}
+
+form * {
+    margin-bottom: 0.3rem;
+}
+
+.avatar {
+    height: 25em;
+    width: 25em;
+    margin-bottom: 1em;
+}
+
+.md-avatar {
+    height: 15em;
+    width: 15em;
+}
+
+.small-avatar {
+    display: inline-block;
+    height: 3em;
+    width: 3em;
+    border-radius: 100%;
+}
+
+.xsmall-avatar {
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    border-radius: 100%;
+}
+
