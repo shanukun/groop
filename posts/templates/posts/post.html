@@ -1,0 +1,72 @@
+{% load static %}
+<div class="card mt-1">
+    <div class="card-body">
+        <div class="row home-post">
+            <div class="col-auto">
+                <img src="{{ obj.author.avatar.url }}" class="small-avatar" />
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col home-post-meta">
+                        <div>
+                            {{ obj.author.user }}
+                            <small class="text-muted">{{ obj.created|timesince }}</small>
+                        </div>
+                    </div>
+                    <div class="home-post-content">{{ obj.content }}</div>
+                </div>
+                {% if not profile_view %}
+                <div class="row mt-1">
+                    <div class="col-auto home-post-like">
+                        <form method="POST"
+                              action="{% url 'posts:like-post-view' %}"
+                              id='{{ obj.id }}'>
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value={{ obj.id }} />
+                            <button class="btn btn-link" type="submit">
+                                {% if profile in obj.liked.all %}
+                                    unlike
+                                {% else %}
+                                    like
+                                {% endif %}
+                                ({{ obj.num_likes }})
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <buttom class="btn btn-link" data-bs-toggle="collapse" href="#user-comments">comments</buttom>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value={{ obj.id }}>
+                        {{ c_form }}
+                        <input type="submit" name="submit_c_form" hidden />
+                    </form>
+                </div>
+
+                <div class="collapse row mt-1 ms-2" id="user-comments">
+                    {% if obj.comment_set.all %}
+                        <ul class="list-group">
+                            {% for c in obj.comment_set.all %}
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <img class="xsmall-avatar" src={{ c.user.avatar.url }}>
+                                        </div>
+                                        <div class="col">
+                                            <span>{{ c.user }}</span>
+                                            <div>{{ c.body }}</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

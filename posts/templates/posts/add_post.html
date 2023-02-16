@@ -1,0 +1,15 @@
+{% load static %}
+<div class="card mt-2">
+    <div class="card-body">
+        {% if post_added %}<div class="alert alert-success">Post added</div>{% endif %}
+        <div class="form-group">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ p_form }}
+                <button class="btn btn-primary btn-sm mt-2 pull-right"
+                        name="submit_p_form"
+                        type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>

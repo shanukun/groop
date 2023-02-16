@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+    home
+{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-3">{% include 'posts/add_post.html' %}</div>
+        <div class="col">
+            <div class="row">
+                {% for obj in qs %}
+                    {% include 'posts/post.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script>
+        setTimeout(function() {
+            for (let element of document.getElementsByClassName("alert")) {
+                element.style.display = "none";
+            }
+        }, 2000);
+    </script>
+{% endblock scripts %}
