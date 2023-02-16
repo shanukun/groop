@@ -1,7 +1,3 @@
-/gerver/migrations/
-*.log
-__pycache__
-*.pyc
-/post_images
-/groop-venv
+venv/
+__pycache__/
 db.sqlite3
