@@ -4,22 +4,11 @@
 
 - Models
   - [x] User
-  - [x] Group
-  - [ ] Settings
+  - [x] Settings
 - URLs
-  - [ ] Wall
-  - [ ] Post
-  - [ ] Profile
-  - [ ] Group info
-  - [ ] Settings
-- API
-  - [ ] Authentication
-  - [ ] Group info
-  - [ ] Profile data
-  - [ ] Wall data
-  - [ ] Post data
-  - [ ] Settings data
-  - [ ] Invite link
+  - [x] Wall
+  - [x] Post
+  - [x] Profile
+  - [x] Settings
 - [ ] Testing
-- [ ] Caching
-- [ ] Linting
+- [x] Linting
