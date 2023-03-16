@@ -1,5 +1,6 @@
 #!/bin/bash
 
-find . -name '*.py' -not -path './venv/*' -exec isort {} \;
-find . -name '*.py' -not -path './venv/*' -exec black --quiet {} \;
-djlint . --lint --reformat --quiet --format-css --format-js --profile=django
+path=$(pwd)
+isort --gitignore $path
+black --exclude \.env $path
+djlint $path --lint --reformat --quiet --format-css --format-js --profile=django
