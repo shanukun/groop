@@ -1,16 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-
-from profiles.models import Profile
+from django.shortcuts import redirect
 
 
 def home_view(request):
-    user = request.user
-    hello = "Hello world"
-
-    context = {
-        "user": user,
-        "hello": hello,
-    }
-    return render(request, "main/home.html", context)
-    # return HttpResponse('Hello world')
+    return redirect("posts:main-post-view")
