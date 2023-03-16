@@ -22,8 +22,20 @@ A social platform website made with Django.
 
 ## Getting Started
 
-Start project
+- Start groop
 
-```
+```console
 docker compose up
 ```
+
+## Screenshots
+
+<p float="left">
+<img src="./scrots/login.png" width="400">
+<img src="./scrots/post-wall.png" width="400">
+<img src="./scrots/allprofile.png" width="400">
+<img src="./scrots/received-invites.png" width="400">
+<img src="./scrots/profile-view.png" width="400">
+</p>
+
+
