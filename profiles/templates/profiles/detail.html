@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-profile detail
+    profile detail
 {% endblock title %}
 {% block content %}
     <div class="row mt-2">
@@ -9,58 +9,70 @@ profile detail
             <table class="table">
                 <tbody>
                     <tr>
-                        <td>Username:</td> 
+                        <td>Username:</td>
                         <td>{{ object.user }}</td>
                     </tr>
                     <tr>
-                        <td>Posts:</td> 
+                        <td>Full Name:</td>
+                        <td>{{ object.first_name }} {{ object.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Posts:</td>
                         <td>{{ object.get_posts_no }}</td>
                     </tr>
                     <tr>
-                        <td>Likes Given:</td> 
-                        <td>{{ object.get_likes_given_no }}</tr></td>
-                        <tr>
-                            <td>Likes Received:</td> 
-                            <td>{{ object.get_likes_recieved_no }}</td>
+                        <td>Likes Given:</td>
+                        <td>
+                            {{ object.get_likes_given_no }}
                         </tr>
-                        <tr>
-                            <td>Friends:</td> 
-                            <td>{{ object.get_friends_no }}</td>
-                        </tr>
+                    </td>
+                    <tr>
+                        <td>Likes Received:</td>
+                        <td>{{ object.get_likes_recieved_no }}</td>
+                    </tr>
+                    <tr>
+                        <td>Friends:</td>
+                        <td>{{ object.get_friends_no }}</td>
+                    </tr>
                 </tbody>
             </table>
             {% if object.user not in rel_receiver and object.user not in rel_sender %}
-            <form action="{% url 'profiles:send-invite' %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="profile_pk" value={{ object.pk }}>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    <i class="plus square icon"></i>Add to friends
-                </button>
-            </form>
+                <form action="{% url 'profiles:send-invite' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value={{ object.pk }}>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="plus square icon"></i>Add to friends
+                    </button>
+                </form>
             {% endif %}
             {% if object.user in rel_receiver and request.user not in object.friends.all %}
-            <button class="btn btn-primary btn-sm">
-                Waiting for approval
-            </button>
+                <button class="btn btn-primary btn-sm">Waiting for approval</button>
             {% endif %}
             {% if request.user in object.friends.all %}
-            <form action="{% url 'profiles:remove-friend' %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="profile_pk" value={{ object.pk }}>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    Remove from friends
-                </button>
-            </form>
+                <form action="{% url 'profiles:remove-friend' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value={{ object.pk }}>
+                    <button type="submit" class="btn btn-primary btn-sm">Remove from friends</button>
+                </form>
             {% endif %}
         </div>
         <div class="col">
-            {% if len_posts %}
-            {% for obj in posts %}
-                {% include  "posts/post.html" %}
-            {% endfor %}
-            {% else %}
-                <h3>No posts of this user ...</h3>
-            {% endif %}
+            <div class="row">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <strong>{{ object.bio }}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% if len_posts %}
+                    {% for obj in posts %}
+                        {% include  "posts/post.html" %}
+                    {% endfor %}
+                {% else %}
+                    <h3>No posts of this user ...</h3>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock content %}
