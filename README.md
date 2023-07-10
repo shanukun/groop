@@ -28,6 +28,8 @@ A social platform website made with Django.
 docker compose up
 ```
 
+**then go to http://localhost:8000**
+
 ## Screenshots
 
 <p float="left">
