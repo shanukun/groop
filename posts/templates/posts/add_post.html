@@ -1,15 +1,16 @@
 {% load static %}
-<div class="card mt-2">
-    <div class="card-body">
-        {% if post_added %}<div class="alert alert-success">Post added</div>{% endif %}
-        <div class="form-group">
-            <form action="" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ p_form }}
-                <button class="btn btn-primary btn-sm mt-2 pull-right"
-                        name="submit_p_form"
-                        type="submit">Submit</button>
-            </form>
+<a class="btn create-post"
+   data-bs-toggle="modal"
+   data-bs-target="#create-post-overlay">
+    <div class="mt-4 create-post row me-0">
+        <div class="col-md-auto">
+            <img src='{{ picture.url }}' class="rounded-circle xsmall-avatar" />
+        </div>
+        <div class="col pt-1">
+            <p>Create a post...</p>
+        </div>
+        <div class="col-md-auto">
+            <button class="btn btn-outline-dark btn-sm" disabled>Post</button>
         </div>
     </div>
-</div>
+</a>

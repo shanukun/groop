@@ -1,12 +1,7 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import DeleteView, UpdateView
-
+from django.shortcuts import render
+from django.views.generic import DetailView
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -18,10 +13,9 @@ from posts.serializers import (
     CommentActionSerializer,
     CommentSerializer,
     PostActionSerializer,
+    PostSerializer,
 )
 from profiles.models import Profile
-
-from .models import Like, Post
 
 from .models import Comment, Like, Notification, Post
 
@@ -29,32 +23,33 @@ from .models import Comment, Like, Notification, Post
 @login_required
 def post_comment_create_and_list_view(request):
     profile = Profile.objects.get(user=request.user)
-    qs = Post.objects.filter(Q(author__friends__profile=profile) | Q(author=profile))
-    profile = Profile.objects.get(user=request.user)
-
-    # initials
-    p_form = PostModelForm()
-    post_added = False
-
-    if "submit_p_form" in request.POST:
-        print(request.POST)
-        p_form = PostModelForm(request.POST, request.FILES)
-        if p_form.is_valid():
-            instance = p_form.save(commit=False)
-            instance.author = profile
-            instance.save()
-            p_form = PostModelForm()
-            post_added = True
-
+    qs = Post.objects.get_my_posts(profile)
 
     context = {
         "qs": qs,
         "profile": profile,
-        "p_form": p_form,
-        "post_added": post_added,
     }
 
     return render(request, "posts/main.html", context)
+
+
+class CreatePost(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        print(request.data)
+        post_serializer = PostSerializer(data=request.data)
+        profile = Profile.objects.get(user=request.user)
+
+        if post_serializer.is_valid():
+            post = post_serializer.save()
+            post = Post.objects.create(
+                content=post.body, image=post.image, author=profile
+            )
+            return Response({"post_id": post.id})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateComment(APIView):
@@ -92,9 +87,23 @@ class LikeUnlikePost(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class DeletePost(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
 
-class PostUpdateView(LoginRequiredMixin, UpdateView):
-    form_class = PostModelForm
+    def post(self, request):
+        print(request.data)
+        post_serializer = PostActionSerializer(data=request.data)
+        profile = Profile.objects.get(user=request.user)
+
+        if post_serializer.is_valid():
+            post = post_serializer.save()
+            addition = Post.objects.get(id=post.post_id).delete()
+            return Response({"add": addition})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class DeleteComment(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]

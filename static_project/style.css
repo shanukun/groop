@@ -2,8 +2,24 @@ html, body {
     height: 100%;
 }
 
+a:link, .nav-link {
+    color: #6e6e6e;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:hover  {
+    color: #6e6e6e;
+    background-color: transparent;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
 .dropdown-item:hover {
+    text-decoration: none;
+}
+
+a.btn {
     text-decoration: none;
 }
 
@@ -12,6 +28,26 @@ html, body {
 .row {
     margin: 0px;
     padding: 0px;
+}
+
+.reduce-col-padding :first-child {
+    padding-right: 1px;
+}
+
+.reduce-col-padding :nth-child(2) {
+    padding-left: 1px;
+}
+
+
+a.create-post {
+    padding: 0;
+    margin: 0;
+    cursor: text;
+}
+
+a.create-post:active {
+    border-style: hidden;
+    text-decoration: None;
 }
 
 .toast a {
@@ -32,6 +68,18 @@ html, body {
     padding-left: 0px;
 }
 
+.create-post p {
+    text-align: left;
+}
+
+.home-post > .col, .home-post > .col-md-auto {
+    padding: 2px 2px;
+}
+
+.create-post .col-md-auto {
+    padding: 2px 2px;
+}
+
 .search-profile p, .search-profile small, .search-profile .col {
     padding: 1px 1px;
 }
@@ -40,11 +88,34 @@ html, body {
     margin-bottom: 0px;
 }
 
+.home-post .bi {
+    font-size: 1rem;
+    color: black;
+    padding: 5px 5px;
+}
+
+.home-post .bi:hover {
+    background: #f2f2f2;
+    border-radius: 85%;
+}
+
+.home-post-lc .btn {
+    padding: 0px;
+}
+
+.home-post-lc .bi {
+    font-size: 1.2rem;
+    color: black;
+    padding: 0px;
+
 }
 
 .home-post-image img {
-    max-height: 20rem;
-    max-width: 20rem;
+    max-height: 30rem;
+    max-width: 30rem;
+    border-radius: 7px;
+}
+
 }
 
 .btn-outline-primary {
@@ -69,6 +140,12 @@ form * {
 .bi:hover {
     background: #f2f2f2;
     border-radius: 20%;
+}
+
+.post-image-icon {
+    padding: 0;
+    font-size: 1.3rem;
+    cursor: pointer;
 }
 
 .bi-heart-fill::before {

@@ -11,11 +11,13 @@
             {% endfor %}
         </div>
     </div>
+    {% include 'posts/create-post-modal.html' %}
     {% include 'posts/create-comment-modal.html' %}
     {% include 'posts/create-toast.html' %}
 {% endblock content %}
 {% block scripts %}
     <script type="text/javascript">
+        modal_focus(gebid('create-post-overlay'), gebid('create-post-textbox'));
         modal_focus(gebid('create-comment-overlay'), gebid('create-comment-textbox'), true);
     </script>
 {% endblock scripts %}

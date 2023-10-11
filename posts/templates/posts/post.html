@@ -11,10 +11,40 @@
                     <div class="col">
                         <strong>{{ obj.author.user }}</strong>
                     </div>
-                    <div class="home-post-content">{{ obj.content }}</div>
-                    <div class="home-post-image">
-                        {% if obj.image %}<img src={{ obj.image.url }}>{% endif %}
+                    <div class="col-md-auto">
+                        <small class="text-muted">{{ obj.created|date:"d M, y" }}</small>
                     </div>
+                    <div class="col-md-auto">
+                        <div class="dropdown">
+                            <i class="bi bi-three-dots-vertical d-flex justify-content-right"
+                               type="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                            </i>
+                            <ul class="dropdown-menu dropdown-menu-start">
+                                {% if obj.author.user == profile.user %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href=""
+                                           onclick="delete_post({{ obj.id }}, '{% url "posts:delete-post-view" %}')">Delete</a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="{% url 'posts:post-detail-view' obj.id %}">Go to comments</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"
+                     onclick="go_to_url('{% url "posts:post-detail-view" obj.id %}')">
+                    <div class="col home-post-content">{{ obj.content }}</div>
+                    {% if obj.image %}
+                        <div class="home-post-image pt-2 pb-2">
+                            <img src={{ obj.image.url }}>
+                        </div>
+                    {% endif %}
                 </div>
                 {% if not profile_view %}
                     <div class="row mt-1 home-post-lc">

@@ -1,0 +1,49 @@
+{% load static %}
+<!-- Modal -->
+<div class="modal fade"
+     id="create-post-overlay"
+     tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="row py-4 px-2">
+                <div class="row reduce-col-padding">
+                    <div class="col-md-auto">
+                        <img src="{{ profile.avatar.url }}" class="rounded-circle xsmall-avatar"/>
+                    </div>
+                    <div class="col-10">
+                        <div class="row">
+                            <strong>{{ profile.user }}</strong>
+                        </div>
+                        <div class="row">
+                            <form id="create-post-form" enctype="multipart/form-data">
+                                <div class="row">
+                                    <span id="create-post-textbox" role="textarea" contenteditable></span>
+                                </div>
+                                <div class="row">
+                                    <label for="upload-post-image"
+                                           id="upload-image-label"
+                                           style="padding-left: 1px">
+                                        <i class="bi bi-paperclip post-image-icon"></i>
+                                        <span id="post-selected-image" class="pb-2 text-muted"></span>
+                                    </label>
+                                    <input type="file"
+                                           accept="image/*"
+                                           style="display: none"
+                                           id="upload-post-image"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 pe-3both">
+                    <div class="col"></div>
+                    <div class="col-md-auto">
+                        <button class="btn btn-sm btn-outline-dark"
+                                onclick="create_post('{% url "posts:create-post-view" %}')">Post</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
