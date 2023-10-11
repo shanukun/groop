@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+    notifications
+{% endblock title %}
+{% block content %}
+    <div class="row">
+        {% for obj in qs %}
+            <div class="row border-bottom py-2">
+                <div class="row">
+                    <div class="col-md-auto">
+                        <img src='{{ obj.actor.avatar.url }}' class="rounded-circle xsmall-avatar" />
+                        <strong>{{ obj.actor.user }}</strong>
+                        {% if obj.action == "like" %}
+                            liked your post
+                        {% else  %}
+                            commented on
+                        {% endif %}
+                    </div>
+                    <div class="col">"{{ obj.post.content|truncatechars:20 }}"</div>
+                    <div class="col-md-auto">
+                        <small class="text-muted">{{ obj.created|date:"d M, y" }}</small>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-md-6 offset-md-3 mt-2">
+                <span class="or-text d-flex justify-content-center">No Notification</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

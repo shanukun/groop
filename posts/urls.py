@@ -7,6 +7,7 @@ from .views import (
     DeletePost,
     LikeUnlikePost,
     PostDetailView,
+    notification_view,
     post_comment_create_and_list_view,
 )
 
@@ -14,6 +15,7 @@ app_name = "posts"
 
 urlpatterns = [
     path("", post_comment_create_and_list_view, name="main-post-view"),
+    path("notifications", notification_view, name="notification-view"),
     path("<pk>", PostDetailView.as_view(), name="post-detail-view"),
     path("api/comment/", CreateComment.as_view(), name="create-comment-view"),
     path("api/create/", CreatePost.as_view(), name="create-post-view"),

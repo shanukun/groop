@@ -137,3 +137,15 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         context["comments"] = Comment.objects.filter(post__id=post.id)
         return context
 
+
+@login_required
+def notification_view(request):
+    profile = Profile.objects.get(user=request.user)
+    qs = Notification.objects.filter(user=profile)
+
+    context = {
+        "qs": qs,
+        "profile": profile,
+    }
+
+    return render(request, "posts/notifications.html", context)
