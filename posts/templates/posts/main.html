@@ -4,22 +4,18 @@
 {% endblock title %}
 {% block content %}
     <div class="row">
-        <div class="col-4">{% include 'posts/add_post.html' %}</div>
-        <div class="col">
-            <div class="row">
-                {% for obj in qs %}
-                    {% include 'posts/post.html' %}
-                {% endfor %}
-            </div>
+        <div class="row">{% include 'posts/add_post.html' %}</div>
+        <div class="row mt-2">
+            {% for obj in qs %}
+                {% include 'posts/post.html' %}
+            {% endfor %}
         </div>
     </div>
+    {% include 'posts/create-comment-modal.html' %}
+    {% include 'posts/create-toast.html' %}
 {% endblock content %}
 {% block scripts %}
-    <script>
-        setTimeout(function() {
-            for (let element of document.getElementsByClassName("alert")) {
-                element.style.display = "none";
-            }
-        }, 2000);
+    <script type="text/javascript">
+        modal_focus(gebid('create-comment-overlay'), gebid('create-comment-textbox'), true);
     </script>
 {% endblock scripts %}

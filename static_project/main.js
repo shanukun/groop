@@ -16,6 +16,26 @@ function go_to_url(url) {
 }
 
 
+function delete_comment(cid, url) {
+    let comment_data = {
+        "comment_id": cid,
+    };
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(comment_data),
+        headers: {
+            "X-CSRFTOKEN": csrf_token
+        },
+        success: function() {
+            location.reload();
+        },
+        contentType: "application/json",
+        dataType: "json"
+    });
+}
+
 function follower_user(btn, uid, url) {
         let post_data = {
             "leader_id": uid
@@ -42,3 +62,29 @@ function follower_user(btn, uid, url) {
         });
 }
 
+function create_comment(url) {
+    let form_data = new FormData($("#create-comment-form")[0]);
+    let comment_body = $("#create-comment-textbox").text();
+    let pid = parseInt($("#create-comment-textbox").data("pid"));
+
+    $("#create-toast").toast("show");
+
+    form_data.append("body", comment_body);
+    form_data.append("post_id", pid);
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form_data,
+        headers: {
+            "X-CSRFTOKEN": csrf_token
+        },
+        success: function(resp) {
+            console.log(resp);
+            $("#create-comment-overlay").modal("hide");
+            $("#post-toast").html("<span role='status'>Posted</span><a href='/posts/" + resp.post_id + "'>View</a>");
+        },
+        contentType: false,
+        processData: false
+    });
+}

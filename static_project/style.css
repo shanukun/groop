@@ -9,6 +9,24 @@ html, body {
     padding: 0px;
 }
 
+.toast a {
+    text-decoration: none;
+    color: black;
+
+}
+
+#create-post-textbox, #create-comment-textbox {
+    display: block;
+    widht: 100%;
+    border: none;
+    outline: none;
+    overflow: hidden;
+    resize: none;
+    min-height: 20px;
+    line-height: 20px;
+    padding-left: 0px;
+}
+
 .search-profile p, .search-profile small, .search-profile .col {
     padding: 1px 1px;
 }
@@ -37,6 +55,16 @@ form * {
     margin-bottom: 0.3rem;
 }
 
+.bi {
+    font-size: 1.7rem;
+    color: #000000;
+    padding: 10px 15px;
+}
+
+.bi:hover {
+    background: #f2f2f2;
+    border-radius: 20%;
+}
 .avatar {
     height: 6em;
     width: 6em;

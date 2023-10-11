@@ -1,0 +1,45 @@
+{% load static %}
+<div class="row border-top pt-2 pb-2">
+    <div class="row home-post">
+        <div class="col-md-auto">
+            <img src="{{ obj.author.avatar.url }}"
+                 class="rounded-circle xsmall-avatar"/>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="row">
+                    <div class="col">
+                        <strong>{{ obj.author.user }}</strong>
+                    </div>
+                    <div class="col-md-auto">
+                        <small class="text-muted">{{ obj.created|date:"d M, y" }}</small>
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="dropdown">
+                            <i class="bi bi-three-dots-vertical d-flex justify-content-right"
+                               type="button"
+                               data-bs-toggle="dropdown"></i>
+                            <ul class="dropdown-menu dropdown-menu-start">
+                                {% if obj.author.user == profile.user %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href=""
+                                           onclick="delete_comment({{ obj.id }}, '{% url "posts:delete-comment-view" %}')">
+                                        Delete</a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="{% url 'posts:post-detail-view' obj.post.id %}">Go to post</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col home-post-content">{{ obj.body }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

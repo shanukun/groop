@@ -1,0 +1,38 @@
+{% load static %}
+<div class="modal fade"
+     id="create-comment-overlay"
+     tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="row py-4 px-2">
+                <div class="row reduce-col-padding">
+                    <div class="col-md-auto">
+                        <img src="{{ profile.avatar.url }}" class="rounded-circle xsmall-avatar"/>
+                    </div>
+                    <div class="col-10">
+                        <div class="row">
+                            <strong>{{ profile.user }}</strong>
+                        </div>
+                        <div class="row">
+                            <form id="create-comment-form" enctype="multipart/form-data">
+                                <div class="row">
+                                    <span id="create-comment-textbox" role="textarea" contenteditable></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 pe-3both">
+                    <div class="col"></div>
+                    <div class="col-md-auto">
+                        <button class="btn btn-sm btn-outline-dark"
+                                onclick="create_comment('{% url "posts:create-comment-view" %}')">
+                            Post
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

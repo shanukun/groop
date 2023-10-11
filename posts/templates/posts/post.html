@@ -1,32 +1,21 @@
 {% load static %}
-<div class="card mt-1">
-    <div class="card-body">
-        <div class="row home-post">
-            <div class="col-auto">
-                <img src="{{ obj.author.avatar.url }}" class="small-avatar" />
-            </div>
-            <div class="col">
+<div class="row border-top pt-2 pb-2 flex-nowrap">
+    <div class="row home-post">
+        <div class="col-md-auto">
+            <img src="{{ obj.author.avatar.url }}"
+                 class="rounded-circle xsmall-avatar"/>
+        </div>
+        <div class="col">
+            <div class="row">
                 <div class="row">
-                    <div class="col home-post-meta">
-                        <div>
-                            <strong>{{ obj.author.user }}</strong>
-                            <small class="text-muted">{{ obj.created|timesince }} ago</small>
-                        </div>
+                    <div class="col">
+                        <strong>{{ obj.author.user }}</strong>
                     </div>
                     <div class="home-post-content">{{ obj.content }}</div>
                     <div class="home-post-image">
                         {% if obj.image %}<img src={{ obj.image.url }}>{% endif %}
                     </div>
                 </div>
-            </div>
-            <div class="row mt-4">
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="post_id" value={{ obj.id }}>
-                    {{ c_form }}
-                    <input type="submit" name="submit_c_form" hidden />
-                </form>
-            </div>
             {% if not profile_view %}
                 <div class="row mt-1">
                     <div class="col-auto home-post-like">
@@ -44,31 +33,20 @@
                                 | {{ obj.num_likes }}
                             </button>
                         </form>
+                        </div>
+                        <div class="col-md-auto">
+                            <buttom class="btn btn-link" data-bs-toggle="modal" data-bs-target="#create-comment-overlay" data-pid="{{ obj.id }}">
+                            <i class="bi bi-chat-right"></i>
+                            </buttom>
+                        </div>
                     </div>
-                    <div class="col">
-                        <buttom class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#user-comments-{{ obj.id }}">comments
-                        | {{ obj.num_comments }}
-                        </buttom>
+                        </div>
+                        <div class="col-md-auto ps-0">
+                            <small class="text-muted">{{ obj.num_comments }} replies</small>
+                        </div>
                     </div>
                 </div>
             {% endif %}
-            <div class="collapse row mt-1 ms-1" id="user-comments-{{ obj.id }}">
-                {% if obj.comment_set.all %}
-                    <ul class="list-group">
-                        {% for c in obj.comment_set.all %}
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-auto">
-                                        <img class="xsmall-avatar" src={{ c.user.avatar.url }}>
-                                    </div>
-                                    <div class="col">
-                                        <span>{{ c.user }}</span>
-                                        <div>{{ c.body }}</div>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
                 {% endif %}
             </div>
         </div>

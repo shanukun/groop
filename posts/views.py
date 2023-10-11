@@ -7,12 +7,21 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, UpdateView
 
+from rest_framework import status
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from posts.serializers import (
+    CommentActionSerializer,
+    CommentSerializer,
+)
 from profiles.models import Profile
 
-from .forms import CommentModelForm, PostModelForm
 from .models import Like, Post
 
-# Create your views here.
 
 
 @login_required
@@ -23,7 +32,6 @@ def post_comment_create_and_list_view(request):
 
     # initials
     p_form = PostModelForm()
-    c_form = CommentModelForm()
     post_added = False
 
     if "submit_p_form" in request.POST:
@@ -36,20 +44,11 @@ def post_comment_create_and_list_view(request):
             p_form = PostModelForm()
             post_added = True
 
-    if "submit_c_form" in request.POST:
-        c_form = CommentModelForm(request.POST)
-        if c_form.is_valid():
-            instance = c_form.save(commit=False)
-            instance.user = profile
-            instance.post = Post.objects.get(id=request.POST.get("post_id"))
-            instance.save()
-            c_form = CommentModelForm()
 
     context = {
         "qs": qs,
         "profile": profile,
         "p_form": p_form,
-        "c_form": c_form,
         "post_added": post_added,
     }
 
@@ -83,29 +82,42 @@ def like_unlike_post(request):
 
             post_obj.save()
             like.save()
+class CreateComment(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
-    return redirect("posts:main-post-view")
+    def post(self, request):
+        comment_serializer = CommentSerializer(data=request.data)
+        profile = Profile.objects.get(user=request.user)
 
+        if comment_serializer.is_valid():
+            comment = comment_serializer.save()
+            post = Post.objects.get(pk=comment.post_id)
+            Comment.objects.create(author=profile, post=post, body=comment.body)
 
-class PostDeleteView(LoginRequiredMixin, DeleteView):
-    model = Post
-    template_name = "posts/confirm_del.html"
-    success_url = reverse_lazy("posts:main-post-view")
-    # success_url = '/posts/'
+            return Response({"post_id": comment.post_id})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def get_object(self, *args, **kwargs):
-        pk = self.kwargs.get("pk")
-        obj = Post.objects.get(pk=pk)
-        if not obj.author.user == self.request.user:
-            messages.warning(
-                self.request,
-                "You need to be the author of the post in order to delete it",
-            )
-        return obj
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PostModelForm
+class DeleteComment(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+        print(request.data)
+        comment_serializer = CommentActionSerializer(data=request.data)
+        profile = Profile.objects.get(user=request.user)
+
+        if comment_serializer.is_valid():
+            comment = comment_serializer.save()
+            addition = Comment.objects.get(id=comment.comment_id).delete()
+            return Response({"add": addition})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     model = Post
     template_name = "posts/update.html"
     success_url = reverse_lazy("posts:main-post-view")
