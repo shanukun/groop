@@ -119,16 +119,21 @@ class DeleteComment(APIView):
             addition = Comment.objects.get(id=comment.comment_id).delete()
             return Response({"add": addition})
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    model = Post
-    template_name = "posts/update.html"
-    success_url = reverse_lazy("posts:main-post-view")
 
-    def form_valid(self, form):
+
+class PostDetailView(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = "posts/post_view.html"
+
+    def get_object(self, *args, **kwargs):
+        return Post.objects.get_post(self.kwargs.get("pk"), self.request.user)
+
+    def get_context_data(self, **kwargs):
         profile = Profile.objects.get(user=self.request.user)
-        if form.instance.author == profile:
-            return super().form_valid(form)
-        else:
-            form.add_error(
-                None, "You need to be the author of the post in order to update it"
-            )
-            return super().form_invalid(form)
+        context = super().get_context_data(**kwargs)
+        post = kwargs.get("object")
+        context["post"] = post
+        context["profile"] = profile
+        context["comments"] = Comment.objects.filter(post__id=post.id)
+        return context
+

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+    Post
+{% endblock title %}
+{% block content %}
+    <div class="row mt-4">
+        {% include 'posts/post.html' with obj=post %}
+        {% for comment in comments %}
+            {% include 'posts/comments.html' with obj=comment %}
+        {% endfor %}
+    </div>
+    {% include 'posts/create-comment-modal.html' %}
+    {% include 'posts/create-toast.html' %}
+{% endblock content %}
+{% block scripts %}
+    <script type="text/javascript">
+        modal_focus(gebid('create-comment-overlay'), gebid('create-comment-textbox'), true);
+    </script>
+{% endblock scripts %}
