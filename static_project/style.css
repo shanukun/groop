@@ -2,10 +2,24 @@ html, body {
     height: 100%;
 }
 
+.container {
+    max-width: 650px;
+}
+
+.groop-headline {
+    font-weight: 700;
+    font-size: 80px;
+}
+
 a:link, .nav-link {
     color: #6e6e6e;
     background-color: transparent;
     text-decoration: none;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #6e6e6e;
+    color: #ffffff;
 }
 
 a:hover  {
@@ -19,10 +33,19 @@ a:hover  {
     text-decoration: none;
 }
 
+
 a.btn {
     text-decoration: none;
 }
 
+.nav-link:hover {
+    color: #6e6e6e;
+    text-decoration: none;
+}
+
+
+.pt-6 {
+    padding-top: 75px;
 }
 
 .row {
@@ -116,6 +139,14 @@ a.create-post:active {
     border-radius: 7px;
 }
 
+nav.container {
+    background: none no-repeat scroll 0 0 #fefefe;
+
+    padding-top: 10px;
+}
+
+div.create-post p {
+    color: #a9a9a9;
 }
 
 .btn-outline-primary {
@@ -129,6 +160,10 @@ a.create-post:active {
 
 form * {
     margin-bottom: 0.3rem;
+}
+
+.form-group input::placeholder {
+    font-size: 12px;
 }
 
 .bi {
