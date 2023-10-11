@@ -17,11 +17,13 @@ from rest_framework.views import APIView
 from posts.serializers import (
     CommentActionSerializer,
     CommentSerializer,
+    PostActionSerializer,
 )
 from profiles.models import Profile
 
 from .models import Like, Post
 
+from .models import Comment, Like, Notification, Post
 
 
 @login_required
@@ -55,33 +57,6 @@ def post_comment_create_and_list_view(request):
     return render(request, "posts/main.html", context)
 
 
-@login_required
-def like_unlike_post(request):
-    user = request.user
-    if request.method == "POST":
-        post_id = request.POST.get("post_id")
-        post_obj = Post.objects.get(id=post_id)
-        profile = Profile.objects.get(user=user)
-
-        if profile in post_obj.liked.all():
-            post_obj.liked.remove(profile)
-        else:
-            post_obj.liked.add(profile)
-
-        # created or fetched
-        like, created = Like.objects.get_or_create(user=profile, post_id=post_id)
-
-        # if fetched - there is an existent value to it
-        if not created:
-            if like.value == "Like":
-                like.value = "Unlike"
-            else:
-                like.value = "Like"
-        else:
-            like.value = "Like"
-
-            post_obj.save()
-            like.save()
 class CreateComment(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -97,6 +72,23 @@ class CreateComment(APIView):
             Comment.objects.create(author=profile, post=post, body=comment.body)
 
             return Response({"post_id": comment.post_id})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class LikeUnlikePost(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+        print(request.data)
+        like_serializer = PostActionSerializer(data=request.data)
+        profile = Profile.objects.get(user=request.user)
+
+        if like_serializer.is_valid():
+            like = like_serializer.save()
+            addition = Like.objects.like_unlike_post(like.post_id, profile)
+            return Response({"add": addition})
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

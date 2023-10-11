@@ -16,23 +16,18 @@
                         {% if obj.image %}<img src={{ obj.image.url }}>{% endif %}
                     </div>
                 </div>
-            {% if not profile_view %}
-                <div class="row mt-1">
-                    <div class="col-auto home-post-like">
-                        <form method="POST"
-                              action="{% url 'posts:like-post-view' %}"
-                              id='{{ obj.id }}'>
-                            {% csrf_token %}
-                            <input type="hidden" name="post_id" value={{ obj.id }} />
-                            <button class="btn btn-sm btn-outline-primary" type="submit">
-                                {% if profile in obj.liked.all %}
-                                    unlike
+                {% if not profile_view %}
+                    <div class="row mt-1 home-post-lc">
+                        <div class="col-md-auto">
+                            <button class="btn btn-link like-btn"
+                                    onclick="like_post(this, {{ obj.id }}, '{% url "posts:like-post-view" %}')"
+                                    type="submit">
+                                {% if obj.likes %}
+                                    <i class="bi bi-heart-fill"></i>
                                 {% else %}
-                                    like
+                                    <i class="bi bi-heart"></i>
                                 {% endif %}
-                                | {{ obj.num_likes }}
                             </button>
-                        </form>
                         </div>
                         <div class="col-md-auto">
                             <buttom class="btn btn-link" data-bs-toggle="modal" data-bs-target="#create-comment-overlay" data-pid="{{ obj.id }}">
@@ -40,13 +35,14 @@
                             </buttom>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-auto">
+                            <small class="text-muted like-cnt-{{ obj.id }}">{{ obj.num_likes }} likes</small>
                         </div>
                         <div class="col-md-auto ps-0">
                             <small class="text-muted">{{ obj.num_comments }} replies</small>
                         </div>
                     </div>
-                </div>
-            {% endif %}
                 {% endif %}
             </div>
         </div>

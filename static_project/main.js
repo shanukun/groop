@@ -16,6 +16,36 @@ function go_to_url(url) {
 }
 
 
+
+function like_post(btn, pid, url) {
+    let post_data = {
+        "post_id": pid,
+    };
+    let like_cnt_text = $(".like-cnt-" + pid);
+    let num_likes = parseInt(like_cnt_text.html());
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(post_data),
+        headers: {
+            "X-CSRFTOKEN": csrf_token
+        },
+        success: function(resp) {
+            if (resp.add === 1) {
+                $(btn).find("i").remove();
+                $(btn).append("<i class='bi bi-heart-fill'></i>")
+            } else {
+                $(btn).find("i").remove();
+                $(btn).append("<i class='bi bi-heart'></i>")
+            }
+            num_likes += resp.add;
+            like_cnt_text.html(num_likes + " likes");
+        },
+        contentType: "application/json",
+        dataType: "json"
+    });
+}
+
 function delete_comment(cid, url) {
     let comment_data = {
         "comment_id": cid,

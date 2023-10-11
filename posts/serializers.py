@@ -1,6 +1,22 @@
 from rest_framework import serializers
 
 
+class PostAction:
+    def __init__(self, post_id):
+        self.post_id = post_id
+
+
+class PostActionSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return PostAction(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.post_id = validated_data.get("post_id", instance.post_id)
+        return instance
+
+
 class Comment:
     def __init__(self, body, post_id):
         self.body = body
