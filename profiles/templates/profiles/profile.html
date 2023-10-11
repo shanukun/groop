@@ -1,0 +1,71 @@
+{% load static %}
+<div class="row">
+    <div class="col">
+        <div class="row pt-3">
+            <h3 class="fw-bold">{{ profile.first_name }} {{ profile.last_name }}</h3>
+        </div>
+        <div class="row">
+            <p>{{ profile.user }}</p>
+        </div>
+        <div class="row pt-2">
+            <p>{{ profile.bio }}</p>
+        </div>
+        <div class="row">
+            <a href="" data-bs-toggle="modal" data-bs-target="#followers-overlay">
+                <small class="text-muted">{{ follower_cnt }} followers</small></a>
+        </div>
+    </div>
+    <div class="col-auto pt-1">
+        <img class="avatar" src={{ profile.avatar.url }}>
+    </div>
+</div>
+<div class="row mt-3">
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <button class="nav-link active"
+                    id="nav-post-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#nav-post"
+                    type="button"
+                    role="tab"
+                    aria-controls="nav-post"
+                    aria-selected="true">
+                Post
+            </button>
+            <button class="nav-link"
+                    id="nav-comments-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#nav-comments"
+                    type="button"
+                    role="tab"
+                    aria-controls="nav-comments"
+                    aria-selected="false">
+                Comment
+            </button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active"
+             id="nav-post"
+             role="tabpanel"
+             aria-labelledby="nav-post-tab"
+             tabindex="0">
+            <div class="row pt-2">
+                {% for obj in posts %}
+                    {% include 'posts/post.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="tab-pane fade"
+             id="nav-comments"
+             role="tabpanel"
+             aria-labelledby="nav-comments-tab"
+             tabindex="0">
+            <div class="row pt-2">
+                {% for comment in comments %}
+                    {% include 'posts/comments.html' with obj=comment %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

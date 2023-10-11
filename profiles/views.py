@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.parsers import JSONParser
@@ -11,54 +11,40 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from posts.models import Comment, Post
 from profiles.serializers import FollowUnfollowReqSerializer
 
-from .forms import ProfileModelForm
 from .models import Profile, Relationship
 
+
+def get_user_info_for_view(profile):
+    context = {}
+
+    # rel_r = Relationship.objects.filter(follower=profile)
+    following = Profile.objects.get_leaders(profile)
+    followers = Profile.objects.get_followers(profile)
+    follower_cnt = followers.count()
+
+    context["profile"] = profile
+    context["follower_cnt"] = follower_cnt
+    context["posts"] = Post.objects.get_author_posts(profile)
+    context["followers"] = followers
+    context["following"] = following
+    context["comments"] = Comment.objects.filter(author=profile)
+
+    return context
 
 
 @login_required
 def my_profile_view(request):
     profile = Profile.objects.get(user=request.user)
-    form = ProfileModelForm(
-        request.POST or None, request.FILES or None, instance=profile
-    )
-    confirm = False
 
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
-            confirm = True
-
-    context = {
-        "profile": profile,
-        "form": form,
-        "confirm": confirm,
-    }
-
-    return render(request, "profiles/myprofile.html", context)
+    context = get_user_info_for_view(profile)
+    return render(request, "profiles/user_profile.html", context)
 
 
 @login_required
-def invites_received_view(request):
-    profile = Profile.objects.get(user=request.user)
-    qs = Relationship.objects.invitations_received(profile)
-    results = list(map(lambda x: x.sender, qs))
-    is_empty = False
-    if len(results) == 0:
-        is_empty = True
-
-    context = {
-        "qs": results,
-        "is_empty": is_empty,
-    }
-
-    return render(request, "profiles/my_invites.html", context)
-
-
-@login_required
-def accept_invatation(request):
+def accept_req(request):
     if request.method == "POST":
         pk = request.POST.get("profile_pk")
         sender = Profile.objects.get(pk=pk)
@@ -67,18 +53,18 @@ def accept_invatation(request):
         if rel.status == "send":
             rel.status = "accepted"
             rel.save()
-    return redirect("profiles:my-invites-view")
+    return redirect("profiles:notifications")
 
 
 @login_required
-def reject_invatation(request):
+def reject_req(request):
     if request.method == "POST":
         pk = request.POST.get("profile_pk")
         receiver = Profile.objects.get(user=request.user)
         sender = Profile.objects.get(pk=pk)
         rel = get_object_or_404(Relationship, sender=sender, receiver=receiver)
         rel.delete()
-    return redirect("profiles:my-invites-view")
+    return redirect("profiles:notifications")
 
 
 @login_required
@@ -93,58 +79,12 @@ def search_profile_view(request):
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
-    template_name = "profiles/detail.html"
+    template_name = "profiles/user_profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = User.objects.get(username__iexact=self.request.user)
-        profile = Profile.objects.get(user=user)
-        rel_r = Relationship.objects.filter(sender=profile)
-        rel_s = Relationship.objects.filter(receiver=profile)
-        rel_receiver = []
-        rel_sender = []
-        for item in rel_r:
-            rel_receiver.append(item.receiver.user)
-        for item in rel_s:
-            rel_sender.append(item.sender.user)
-        context["profile_view"] = True
-        context["profile"] = profile
-        context["rel_receiver"] = rel_receiver
-        context["rel_sender"] = rel_sender
-        context["posts"] = self.get_object().get_all_authors_posts()
-        context["len_posts"] = (
-            True if len(self.get_object().get_all_authors_posts()) > 0 else False
-        )
-        return context
-
-
-class ProfileListView(LoginRequiredMixin, ListView):
-    model = Profile
-    template_name = "profiles/profile_list.html"
-    # context_object_name = 'qs'
-
-    def get_queryset(self):
-        qs = Profile.objects.get_all_profiles(self.request.user)
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = User.objects.get(username__iexact=self.request.user)
-        profile = Profile.objects.get(user=user)
-        rel_r = Relationship.objects.filter(sender=profile)
-        rel_s = Relationship.objects.filter(receiver=profile)
-        rel_receiver = []
-        rel_sender = []
-        for item in rel_r:
-            rel_receiver.append(item.receiver.user)
-        for item in rel_s:
-            rel_sender.append(item.sender.user)
-        context["rel_receiver"] = rel_receiver
-        context["rel_sender"] = rel_sender
-        context["is_empty"] = False
-        if len(self.get_queryset()) == 0:
-            context["is_empty"] = True
-
+        profile = kwargs.get("object")
+        context = get_user_info_for_view(profile)
         return context
 
 
@@ -168,7 +108,7 @@ class FollowSendReq(APIView):
 
 
 @login_required
-def remove_from_friends(request):
+def unfollow_leader(request):
     if request.method == "POST":
         pk = request.POST.get("profile_pk")
         user = request.user

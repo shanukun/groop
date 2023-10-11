@@ -3,25 +3,21 @@ from django.urls import path
 from .views import (
     FollowSendReq,
     ProfileDetailView,
-    ProfileListView,
-    accept_invatation,
-    invites_received_view,
+    accept_req,
     my_profile_view,
-    reject_invatation,
-    remove_from_friends,
-    send_invatation,
+    reject_req,
+    search_profile_view,
+    unfollow_leader,
 )
 
 app_name = "profiles"
 
 urlpatterns = [
-    path("", ProfileListView.as_view(), name="all-profiles-view"),
-    path("myprofile/", my_profile_view, name="my-profile-view"),
-    path("send-invite/", send_invatation, name="send-invite"),
-    path("remove-friend/", remove_from_friends, name="remove-friend"),
-    path("<slug>/", ProfileDetailView.as_view(), name="profile-detail-view"),
-    path("my-invites/acctept/", accept_invatation, name="accept-invite"),
-    path("my-invites/reject/", reject_invatation, name="reject-invite"),
+    path("user/", my_profile_view, name="my-profile-view"),
+    path("user/<int:pk>/", ProfileDetailView.as_view(), name="profile-detail-view"),
     path("search_profile/", search_profile_view, name="search-profile-view"),
     path("follow_send_req/", FollowSendReq.as_view(), name="follow-send-req"),
+    path("unfollow/", unfollow_leader, name="unfollow-leader"),
+    path("reqs/acctept/", accept_req, name="accept-req"),
+    path("reqs/reject/", reject_req, name="reject-req"),
 ]
