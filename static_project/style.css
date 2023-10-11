@@ -2,12 +2,21 @@ html, body {
     height: 100%;
 }
 
-body {
-    background: url("./assets/bg.png") bottom left no-repeat fixed;
 }
 
-home-post {
+.row {
     margin: 0px;
+    padding: 0px;
+}
+
+.search-profile p, .search-profile small, .search-profile .col {
+    padding: 1px 1px;
+}
+
+.search-profile p {
+    margin-bottom: 0px;
+}
+
 }
 
 .home-post-image img {
@@ -29,9 +38,10 @@ form * {
 }
 
 .avatar {
-    height: 25em;
-    width: 25em;
+    height: 6em;
+    width: 6em;
     margin-bottom: 1em;
+    border-radius: 100%;
 }
 
 .md-avatar {
@@ -41,15 +51,16 @@ form * {
 
 .small-avatar {
     display: inline-block;
-    height: 2.5em;
-    width: 2.5em;
+    height: 2.1em;
+    width: 2.1em;
+    margin-top: 0.5em;
+    margin: 10px 15px;
     border-radius: 100%;
 }
 
 .xsmall-avatar {
     display: inline-block;
-    height: 1.5em;
-    width: 1.5em;
+    height: 2.1em;
+    width: 2.1em;
     border-radius: 100%;
 }
-

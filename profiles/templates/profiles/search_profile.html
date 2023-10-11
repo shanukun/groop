@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    Search
+{% endblock title %}
+{% block content %}
+    <div class="row search-profile mt-4">
+        {% for item in qs %}
+            <div class="row mt-2 pb-1">
+                <div class="col-md-auto">
+                    <img class="xsmall-avatar" src={{ item.avatar.url }} />
+                </div>
+                <div class="col border-bottom ">
+                    <div class="row">
+                        <p>{{ item.user.username }}</p>
+                    </div>
+                    <div class="row">
+                        <small class="text-muted">{{ item.first_name }} {{ item.last_name }}</small>
+                    </div>
+                    <div class="row mt-2">
+                        <p>{{ item.follower_cnt }} followers</p>
+                    </div>
+                </div>
+                <div class="col-md-auto border-bottom ">
+                    <button class="btn btn-sm btn-outline-dark follow-btn"
+                            onclick="follower_user(this, {{ item.user.id }}, '{% url "profiles:follow-send-req" %}')">
+                        Follow
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

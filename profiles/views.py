@@ -4,11 +4,18 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, ListView
+from rest_framework import status
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from profiles.serializers import FollowUnfollowReqSerializer
 
 from .forms import ProfileModelForm
 from .models import Profile, Relationship
 
-# Create your views here.
 
 
 @login_required
@@ -75,23 +82,13 @@ def reject_invatation(request):
 
 
 @login_required
-def invite_profiles_list_view(request):
+def search_profile_view(request):
     user = request.user
-    qs = Profile.objects.get_all_profiles_to_invite(user)
+    qs = Profile.objects.get_all_profiles_to_follow(user)
 
     context = {"qs": qs}
 
-    return render(request, "profiles/to_invite_list.html", context)
-
-
-@login_required
-def profiles_list_view(request):
-    user = request.user
-    qs = Profile.objects.get_all_profiles(user)
-
-    context = {"qs": qs}
-
-    return render(request, "profiles/profile_list.html", context)
+    return render(request, "profiles/search_profile.html", context)
 
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
@@ -151,21 +148,23 @@ class ProfileListView(LoginRequiredMixin, ListView):
         return context
 
 
-@login_required
-def send_invatation(request):
-    if request.method == "POST":
-        pk = request.POST.get("profile_pk")
-        user = request.user
-        sender = Profile.objects.get(user=user)
-        receiver = Profile.objects.get(pk=pk)
+class FollowSendReq(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
 
-        rel = Relationship.objects.create(
-            sender=sender, receiver=receiver, status="send"
-        )
+    def post(self, request):
+        follow = FollowUnfollowReqSerializer(data=request.data)
+        follower = Profile.objects.get(user=request.user)
 
-        # referring page
-        return redirect(request.META.get("HTTP_REFERER"))
-    return redirect("profiles:my-profile-view")
+        if follow.is_valid():
+            follow_req = follow.save()
+            leader = Profile.objects.get(pk=follow_req.leader_id)
+            if Relationship.objects.follow_unfollow(follower, leader):
+                return Response({"msg": "Follow request sent."})
+            else:
+                return Response({"msg": "Unfollowed."})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @login_required
